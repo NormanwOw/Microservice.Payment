@@ -1,0 +1,18 @@
+import json
+
+from aiokafka import AIOKafkaConsumer
+
+from src.config import Settings
+from src.infrastructure.messaging.interfaces import IKafkaConsumer
+
+
+class KafkaConsumer(IKafkaConsumer, AIOKafkaConsumer):
+    def __init__(self, settings: Settings):
+        super().__init__(
+            settings.PAYMENT_COMMANDS_TOPIC,
+            bootstrap_servers=settings.KAFKA_HOSTS,
+            group_id='payment_group',
+            enable_auto_commit=False,
+            auto_offset_reset='earliest',
+            value_deserializer=lambda msg: json.loads(msg.decode()),
+        )
