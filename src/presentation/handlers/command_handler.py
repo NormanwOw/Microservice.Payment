@@ -20,9 +20,10 @@ async def charge_payment_handler(
         msg = ChargePaymentMessage(**message)
         payment_data: PaymentData = await charge_payment(uow, msg)
         logger.info(
-            f'Successfully charged payment from customer {payment_data.customer_email}, '
-            f'order id: {payment_data.order_id}. '
-            f'Command message id: {msg.message_id}'
+            f'Successfully charged payment from customer {payment_data.customer_id} | '
+            f'order id: {payment_data.order.id}, '
+            f'amount {payment_data.order.amount}{payment_data.order.currency.value}, '
+            f'command message id: {msg.message_id}'
         )
     except DomainException as ex:
         logger.info(ex.detail)

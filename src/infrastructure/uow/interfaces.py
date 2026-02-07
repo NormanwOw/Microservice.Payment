@@ -6,6 +6,7 @@ from src.infrastructure.repositories import interfaces as i
 class IUnitOfWork(ABC):
     outbox: i.IOutboxRepository
     processed_messages: i.IProcessedMessagesModelRepository
+    customers: i.ICustomerRepository
 
     async def __aenter__(self):
         raise NotImplementedError

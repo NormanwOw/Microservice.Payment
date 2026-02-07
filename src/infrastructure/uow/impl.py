@@ -1,4 +1,6 @@
+from src.infrastructure.repositories.customer_repository import CustomerRepository
 from src.infrastructure.repositories.interfaces import (
+    ICustomerRepository,
     IOutboxRepository,
     IProcessedMessagesModelRepository,
 )
@@ -36,6 +38,10 @@ class UnitOfWork(IUnitOfWork):
     @property
     def processed_messages(self) -> IProcessedMessagesModelRepository:
         return ProcessedMessagesModelRepository(self.__session)
+
+    @property
+    def customers(self) -> ICustomerRepository:
+        return CustomerRepository(self.__session)
 
 
 def get_uow() -> IUnitOfWork:

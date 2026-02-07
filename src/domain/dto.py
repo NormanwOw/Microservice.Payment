@@ -1,8 +1,9 @@
+from uuid import UUID
+
 from src.domain.base import PydanticBase
+from src.domain.entities import Order
 
 
 class PaymentData(PydanticBase):
-    customer_id: str
-    customer_email: str
-    order_id: str
-    order_amount: int
+    customer_id: UUID
+    order: Order
