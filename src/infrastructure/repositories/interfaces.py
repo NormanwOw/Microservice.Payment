@@ -19,7 +19,10 @@ class ISQLAlchemyRepository(ABC):
 
     @abstractmethod
     async def find_one(
-        self, filter_field: InstrumentedAttribute = None, filter_value: Any = None
+        self,
+        filter_field: InstrumentedAttribute = None,
+        filter_value: Any = None,
+        with_for_update: bool = False,
     ) -> T:
         raise NotImplementedError
 
@@ -45,3 +48,6 @@ class IOutboxRepository(ISQLAlchemyRepository, ABC): ...
 
 
 class IProcessedMessagesModelRepository(ISQLAlchemyRepository, ABC): ...
+
+
+class ICustomerRepository(ISQLAlchemyRepository, ABC): ...
