@@ -28,12 +28,18 @@ class SQLAlchemyRepository(ISQLAlchemyRepository):
         return res.scalars().all()
 
     async def find_one(
-        self, filter_field: InstrumentedAttribute = None, filter_value: Any = None
+        self,
+        filter_field: InstrumentedAttribute = None,
+        filter_value: Any = None,
+        with_for_update: bool = False,
     ) -> T:
         if filter_field and filter_value:
             query = select(self.model).where(filter_field == filter_value)
         else:
             query = select(self.model)
+
+        if with_for_update:
+            query.with_for_update()
         res = await self.session.execute(query)
         return res.scalars().first()
 

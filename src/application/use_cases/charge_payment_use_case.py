@@ -1,8 +1,40 @@
+from src.domain.dto import PaymentData
+from src.domain.entities import Order
+from src.domain.exceptions import CustomerNotFoundException, NotEnoughFundsException
 from src.infrastructure.messaging.messages import ChargePaymentMessage
+from src.infrastructure.models import CustomerModel
+from src.infrastructure.services.interfaces import IOrderService
 from src.infrastructure.uow.interfaces import IUnitOfWork
 
 
 class ChargePayment:
-    async def __call__(self, uow: IUnitOfWork, message: ChargePaymentMessage):
-        async with uow:
-            pass
+    def __init__(self, order_service_proxy: IOrderService):
+        self.order_service_proxy = order_service_proxy
+
+    async def __call__(self, uow: IUnitOfWork, message: ChargePaymentMessage) -> PaymentData:
+        customer: CustomerModel = await uow.customers.find_one(
+            CustomerModel.id, message.payload.user_id, with_for_update=True
+        )
+        if not customer:
+            error_message = f'Customer with id {message.payload.user_id} not found'
+            await self.order_service_proxy.charge_payment_failed(
+                uow=uow, error_message=error_message, external_reference=message.external_reference
+            )
+            raise CustomerNotFoundException(detail=error_message)
+        if customer.balance < message.payload.amount:
+            error_message = f'Customer with id {message.payload.user_id} not enough funds'
+            await self.order_service_proxy.charge_payment_failed(
+                uow=uow, error_message=error_message, external_reference=message.external_reference
+            )
+            raise NotEnoughFundsException(detail=error_message)
+
+        customer.balance -= message.payload.amount
+        await self.order_service_proxy.payment_charged(uow, message.external_reference)
+        return PaymentData(
+            customer_id=customer.id,
+            order=Order(
+                id=message.external_reference.id,
+                amount=message.payload.amount,
+                currency=message.payload.currency,
+            ),
+        )

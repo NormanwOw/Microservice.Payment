@@ -15,6 +15,8 @@ async def start_app():
 if __name__ == '__main__':
     try:
         asyncio.run(start_app())
+    except KeyboardInterrupt:
+        pass
     except Exception:
         raise
     finally:
