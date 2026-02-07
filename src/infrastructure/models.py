@@ -1,8 +1,9 @@
 import uuid
 from datetime import datetime, timezone
+from decimal import Decimal
 from typing import Optional
 
-from sqlalchemy import UUID, DateTime
+from sqlalchemy import UUID, DateTime, Numeric
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -20,6 +21,12 @@ class CUModel:
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=True, onupdate=lambda: datetime.now(timezone.utc)
     )
+
+
+class CustomerModel(Base, CUModel):
+    __tablename__ = 'customers'
+
+    balance: Mapped[Decimal] = mapped_column(Numeric, nullable=False)
 
 
 class OutboxModel(Base, CUModel):
