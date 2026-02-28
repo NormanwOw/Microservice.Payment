@@ -1,6 +1,8 @@
+from decimal import Decimal
+
 from src.domain.dto import PaymentData
 from src.domain.entities import Order
-from src.domain.exceptions import CustomerNotFoundException, NotEnoughFundsException
+from src.domain.exceptions import NotEnoughFundsException
 from src.infrastructure.messaging.messages import ChargePaymentMessage
 from src.infrastructure.models import CustomerModel
 from src.infrastructure.services.interfaces import IOrderService
@@ -16,11 +18,11 @@ class ChargePayment:
             CustomerModel.id, message.payload.user_id, with_for_update=True
         )
         if not customer:
-            error_message = f'Customer with id {message.payload.user_id} not found'
-            await self.order_service_proxy.charge_payment_failed(
-                uow=uow, error_message=error_message, external_reference=message.external_reference
+            customer = CustomerModel(
+                id=message.payload.user_id,
+                balance=Decimal('10000.00'),
             )
-            raise CustomerNotFoundException(detail=error_message)
+            await uow.customers.add(customer)
         if customer.balance < message.payload.amount:
             error_message = f'Customer with id {message.payload.user_id} not enough funds'
             await self.order_service_proxy.charge_payment_failed(
