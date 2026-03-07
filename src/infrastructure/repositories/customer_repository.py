@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.application.ports.repositories import ICustomerRepository
 from src.infrastructure.models import CustomerModel
 from src.infrastructure.repositories.base_repository import SQLAlchemyRepository
-from src.infrastructure.repositories.interfaces import ICustomerRepository
 
 
 class CustomerRepository(SQLAlchemyRepository, ICustomerRepository):

@@ -1,12 +1,12 @@
 from decimal import Decimal
 
+from src.application.ports.services import IOrderService
+from src.application.ports.uow import IUnitOfWork
 from src.domain.dto import PaymentData
 from src.domain.entities import Order
 from src.domain.exceptions import NotEnoughFundsException
 from src.infrastructure.messaging.messages import ChargePaymentMessage
 from src.infrastructure.models import CustomerModel
-from src.infrastructure.services.interfaces import IOrderService
-from src.infrastructure.uow.interfaces import IUnitOfWork
 
 
 class ChargePayment:

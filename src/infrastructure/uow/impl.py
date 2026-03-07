@@ -1,15 +1,15 @@
-from src.infrastructure.repositories.customer_repository import CustomerRepository
-from src.infrastructure.repositories.interfaces import (
+from src.application.ports.repositories import (
     ICustomerRepository,
     IOutboxRepository,
     IProcessedMessagesModelRepository,
 )
+from src.application.ports.uow import IUnitOfWork
+from src.infrastructure.repositories.customer_repository import CustomerRepository
 from src.infrastructure.repositories.outbox_repository import OutboxRepository
 from src.infrastructure.repositories.processed_message_repository import (
     ProcessedMessagesModelRepository,
 )
 from src.infrastructure.session import async_session
-from src.infrastructure.uow.interfaces import IUnitOfWork
 
 
 class UnitOfWork(IUnitOfWork):

@@ -1,12 +1,12 @@
 from src.application.disp_depends import DispDepends
 from src.application.dispatcher import dispatcher
+from src.application.ports.uow import IUnitOfWork
 from src.application.use_cases.charge_payment_use_case import ChargePayment
 from src.domain.dto import PaymentData
 from src.domain.enums import CommandType
 from src.domain.exceptions import DomainException
 from src.infrastructure.logger.impl import logger
 from src.infrastructure.messaging.messages import ChargePaymentMessage
-from src.infrastructure.uow.interfaces import IUnitOfWork
 from src.presentation.dependencies import PaymentDependencies
 
 

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
+from src.application.ports.uow import IUnitOfWork
 from src.infrastructure.messaging.messages import ExternalReference
-from src.infrastructure.uow.interfaces import IUnitOfWork
 
 
 class IOrderService(ABC):
